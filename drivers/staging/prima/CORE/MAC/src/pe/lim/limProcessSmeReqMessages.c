@@ -189,9 +189,9 @@ __limFreshScanReqd(tpAniSirGlobal pMac, tANI_U8 returnFreshResults)
     limLog(pMac, LOG1, FL("FreshScanReqd: %d "), validState);
 
    if( (validState) && (returnFreshResults & SIR_BG_SCAN_RETURN_FRESH_RESULTS))
-    return TRUE;
+      return TRUE;
 
-    return FALSE;
+   return FALSE;
 }
 
 
@@ -1121,6 +1121,8 @@ static eHalStatus limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
     tSirMsgQ msg;
     tANI_U16 i, len;
     tSirRetStatus rc = eSIR_SUCCESS;
+    if (pScanReq->channelList.numChannels > SIR_ESE_MAX_MEAS_IE_REQS)
+        pScanReq->channelList.numChannels = SIR_ESE_MAX_MEAS_IE_REQS;
 
     /* The tSirScanOffloadReq will reserve the space for first channel,
        so allocate the memory for (numChannels - 1) and uIEFieldLen */
@@ -4141,6 +4143,11 @@ __lim_process_sme_assoc_offload_cnf(tpAniSirGlobal pmac,
         limDeactivateAndChangePerStaIdTimer(pmac,
                 eLIM_CNF_WAIT_TIMER,
                 aid);
+    }
+    else
+    {
+      limLog(pmac, LOGE, FL("NULL sta_ds"));
+      goto end;
     }
     if (assoc_cnf.statusCode == eSIR_SME_SUCCESS)
     {
