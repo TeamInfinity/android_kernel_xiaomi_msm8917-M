@@ -674,6 +674,7 @@ static void input_dev_release_keys(struct input_dev *dev)
 	int code;
 
 	if (is_event_supported(EV_KEY, dev->evbit, EV_MAX)) {
+<<<<<<< HEAD
 		for (code = 0; code <= KEY_MAX; code++) {
 			if (is_event_supported(code, dev->keybit, KEY_MAX) &&
 			    __test_and_clear_bit(code, dev->key)) {
@@ -683,6 +684,17 @@ static void input_dev_release_keys(struct input_dev *dev)
 		}
 		if (need_sync)
 			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
+=======
+		for_each_set_bit(code, dev->key, KEY_CNT) {
+			input_pass_event(dev, EV_KEY, code, 0);
+			need_sync = true;
+		}
+
+		if (need_sync)
+			input_pass_event(dev, EV_SYN, SYN_REPORT, 1);
+
+		memset(dev->key, 0, sizeof(dev->key));
+>>>>>>> 7b3c18df89a1145c589e5b144cd693ef77cd56a8
 	}
 }
 
