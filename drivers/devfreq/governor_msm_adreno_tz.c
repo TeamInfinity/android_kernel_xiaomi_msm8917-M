@@ -1,4 +1,4 @@
-/* Copyright (c) 2010-2017, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2010-2016, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -239,7 +239,7 @@ static int tz_init_ca(struct devfreq_msm_adreno_tz_data *priv)
 {
 	unsigned int tz_ca_data[2];
 	struct scm_desc desc = {0};
-	u8 *tz_buf;
+	unsigned int *tz_buf;
 	int ret;
 
 	/* Set data for TZ */
@@ -284,7 +284,7 @@ static int tz_init(struct devfreq_msm_adreno_tz_data *priv,
 			scm_is_call_available(SCM_SVC_DCVS, TZ_UPDATE_ID_64) &&
 			scm_is_call_available(SCM_SVC_DCVS, TZ_RESET_ID_64)) {
 		struct scm_desc desc = {0};
-		u8 *tz_buf;
+		unsigned int *tz_buf;
 
 		if (!is_scm_armv8()) {
 			ret = scm_call(SCM_SVC_DCVS, TZ_INIT_ID_64,
@@ -348,7 +348,6 @@ extern int simple_gpu_active;
 extern int simple_gpu_algorithm(int level, int *val,
 				struct devfreq_msm_adreno_tz_data *priv);
 #endif
-
 static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 				u32 *flag)
 {
@@ -366,7 +365,7 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 		return result;
 	}
 
-        /* Prevent overflow */
+	/* Prevent overflow */
 	if (stats.busy_time >= (1 << 24) || stats.total_time >= (1 << 24)) {
 		stats.busy_time >>= 7;
 		stats.total_time >>= 7;
@@ -381,11 +380,11 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
  		return 0;
  	}
 #endif
-
+ 
 	/*
 	* Force to use & record as min freq when system has
 	*entered pm-suspend or screen-off state.
-	*/
+	*\
 	if (suspended || !display_on) {
 		*freq = devfreq->profile->freq_table[devfreq->profile->max_state - 1];
 		return 0;
@@ -394,16 +393,17 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
  	priv->bin.total_time += stats.total_time;
  	priv->bin.busy_time += stats.busy_time;
 
-        if (stats.private_data)
+	if (stats.private_data)
 		context_count =  *((int *)stats.private_data);
 
 	compute_work_load(&stats, priv, devfreq);
-	/*
+
 	 * Do not waste CPU cycles running this algorithm if
 	 * the GPU just started, or if less than FLOOR time
 	 * has passed since the last run or the gpu hasn't been
 	 * busier than MIN_BUSY.
 	 */
+
 	if ((stats.total_time == 0) ||
 		(priv->bin.total_time < FLOOR) ||
 		(unsigned int) priv->bin.busy_time < MIN_BUSY) {
@@ -436,13 +436,13 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq,
 						&val, sizeof(val), priv);
 		}
 #else
-
 		scm_data[0] = level;
 		scm_data[1] = priv->bin.total_time;
 		scm_data[2] = priv->bin.busy_time;
 		scm_data[3] = context_count;
 		__secure_tz_update_entry3(scm_data, sizeof(scm_data),
 					&val, sizeof(val), priv);
+#endif
 	}
 	priv->bin.total_time = 0;
 	priv->bin.busy_time = 0;
