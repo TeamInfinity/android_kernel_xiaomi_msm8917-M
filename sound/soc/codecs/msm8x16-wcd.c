@@ -5821,10 +5821,10 @@ static ssize_t headphone_gain_store(struct kobject *kobj,
 
 	sscanf(buf, "%d %d", &input_l, &input_r);
 
-	if (input_l < -84 || input_l > 20)
+	if (input_l < -10 || input_l > 20)
 		input_l = 0;
 
-	if (input_r < -84 || input_r > 20)
+	if (input_r < -10 || input_r > 20)
 		input_r = 0;
 
 	snd_soc_write(sound_control_codec_ptr, MSM8X16_WCD_A_CDC_RX1_VOL_CTL_B2_CTL, input_l);
@@ -5895,7 +5895,6 @@ static struct kobj_attribute speaker_gain_attribute =
 static struct attribute *sound_control_attrs[] = {
 		&headphone_gain_attribute.attr,
 		&mic_gain_attribute.attr,
-		&speaker_gain_attribute.attr,
 		NULL,
 };
 
@@ -5919,7 +5918,6 @@ static int msm8x16_wcd_codec_probe(struct snd_soc_codec *codec)
 #ifdef CONFIG_SOUND_CONTROL
 	sound_control_codec_ptr = codec;
 #endif
-
 	msm8x16_wcd_priv = kzalloc(sizeof(struct msm8x16_wcd_priv), GFP_KERNEL);
 	if (!msm8x16_wcd_priv)
 		return -ENOMEM;
@@ -6456,6 +6454,7 @@ static int msm8x16_wcd_spmi_probe(struct spmi_device *spmi)
 	}
 	dev_set_drvdata(&spmi->dev, msm8x16);
 	spmi_dev_registered_cnt++;
+
 
 #ifdef CONFIG_SOUND_CONTROL
 	sound_control_kobj = kobject_create_and_add("sound_control", kernel_kobj);
