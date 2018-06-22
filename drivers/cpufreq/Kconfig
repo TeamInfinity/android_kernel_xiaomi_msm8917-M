@@ -157,8 +157,6 @@ config CPU_FREQ_DEFAULT_GOV_BIOSHOCK
 	help
 	  Default governor of BioShock kernel
 
-endchoice
-
 config CPU_FREQ_DEFAULT_GOV_ELEMENTALX
 	bool "elementalx"
 	select CPU_FREQ_GOV_ELEMENTALX
