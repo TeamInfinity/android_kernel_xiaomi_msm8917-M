@@ -1029,10 +1029,6 @@ static int mdss_dsi_panel_off(struct mdss_panel_data *pdata)
 
 	display_on = false;
 
-	
-	pr_info("%s: mdss_dsi_panel_off time=%ums \n", __func__,
-		jiffies_to_msecs(jiffies-timeout));
-
 end:
 	/* clear idle state */
 	ctrl->idle = false;
