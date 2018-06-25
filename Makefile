@@ -403,7 +403,8 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   := -w \
+                   -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
                    -Wno-misleading-indentation \
 		   -Werror-implicit-function-declaration \
